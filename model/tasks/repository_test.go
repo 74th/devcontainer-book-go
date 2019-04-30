@@ -1,11 +1,13 @@
 package tasks
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestNewRepository(t *testing.T) {
 	rep := NewRepository()
-	if len(rep.tasks) != 2 {
-		t.Errorf("初期化時点で2つのタスクが格納されていること %d", len(rep.tasks))
+	if len(rep.(*repository).tasks) != 2 {
+		t.Errorf("初期化時点で2つのタスクが格納されていること %d", len(rep.(*repository).tasks))
 	}
 }
 func TestAdd(t *testing.T) {
@@ -14,10 +16,10 @@ func TestAdd(t *testing.T) {
 		Text: "new task",
 	})
 
-	if len(rep.tasks) != 3 {
-		t.Errorf("タスクが追加されていること %d", len(rep.tasks))
+	if len(rep.(*repository).tasks) != 3 {
+		t.Errorf("タスクが追加されていること %d", len(rep.(*repository).tasks))
 	} else {
-		addedTask := rep.tasks[2]
+		addedTask := rep.(*repository).tasks[2]
 
 		if addedTask.Text != "new task" {
 			t.Errorf("追加したタスクが末尾に追加されていること %s", addedTask.Text)
@@ -27,7 +29,7 @@ func TestAdd(t *testing.T) {
 			t.Errorf("タスクに新しいIDが振られること %d", addedTask.ID)
 		}
 
-		for i, task := range rep.tasks {
+		for i, task := range rep.(*repository).tasks {
 			if i != 2 {
 				if addedTask.ID == task.ID {
 					t.Errorf("既存のタスクとは異なるIDが振られていること %d == %d", addedTask.ID, task.ID)
@@ -52,7 +54,7 @@ func TestDone(t *testing.T) {
 		t.Errorf("完了にする前のタスクの数のチェック")
 	}
 
-	doneID := rep.tasks[1].ID
+	doneID := rep.(*repository).tasks[1].ID
 	rep.Done(doneID)
 
 	l = rep.List()
