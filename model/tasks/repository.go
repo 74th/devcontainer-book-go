@@ -3,13 +3,20 @@ package tasks
 import "fmt"
 
 // Repository タスクリポジトリ
-type Repository struct {
+type Repository interface {
+	Add(Task) int
+	List() []*Task
+	Done(id int) error
+}
+
+// repository タスクリポジトリの実装
+type repository struct {
 	tasks []Task
 }
 
 // NewRepository 新しいタスクリポジトリを作成する
-func NewRepository() *Repository {
-	r := new(Repository)
+func NewRepository() Repository {
+	r := new(repository)
 	r.tasks = make([]Task, 2, 20)
 	r.tasks[0] = Task{
 		ID:   1,
@@ -25,14 +32,14 @@ func NewRepository() *Repository {
 }
 
 // Add タスクを追加する
-func (r *Repository) Add(task Task) int {
+func (r *repository) Add(task Task) int {
 	task.ID = len(r.tasks) + 1
 	r.tasks = append(r.tasks, task)
 	return task.ID
 }
 
 // List タスクの一覧を取得する
-func (r *Repository) List() []*Task {
+func (r *repository) List() []*Task {
 	result := []*Task{}
 	for i, task := range r.tasks {
 		if !task.Done {
@@ -45,7 +52,7 @@ func (r *Repository) List() []*Task {
 }
 
 // Done タスクを完了させる
-func (r *Repository) Done(id int) error {
+func (r *repository) Done(id int) error {
 	for i, task := range r.tasks {
 		if task.ID == id {
 			r.tasks[i].Done = true
