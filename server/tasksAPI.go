@@ -6,12 +6,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	domain "github.com/74th/vscode-book-golang/model/tasks"
+	"github.com/74th/vscode-book-golang/repository"
+	"github.com/74th/vscode-book-golang/model/tasks"
 )
 
 // tasksAPI タスクAPI
 type tasksAPI struct {
-	rep *domain.Repository
+	rep tasks.Repository
 }
 
 // setRouter ルーターの設定
@@ -23,7 +24,7 @@ func (a *tasksAPI) setRouter(router *gin.RouterGroup) {
 
 // init 初期化
 func (a *tasksAPI) init(router *gin.RouterGroup) {
-	a.rep = domain.NewRepository()
+	a.rep = repository.New()
 	a.setRouter(router)
 }
 
@@ -35,7 +36,7 @@ func (a *tasksAPI) list(c *gin.Context) {
 
 // create POST /tasks
 func (a *tasksAPI) create(c *gin.Context) {
-	var task domain.Task
+	var task tasks.Task
 	c.ShouldBindJSON(&task)
 	task.ID = a.rep.Add(task)
 	c.JSON(200, &task)
