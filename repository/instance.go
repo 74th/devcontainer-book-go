@@ -1,17 +1,17 @@
 package repository
 
 import (
-	"github.com/74th/vscode-book-golang/model/tasks"
 	"fmt"
+	"github.com/74th/vscode-book-golang/model/tasks"
 )
 
 // repository タスク	リポジトリの実装
-type instance struct{
+type instance struct {
 	tasks []tasks.Task
 }
 
 // New リポジトリの作成
-func New() tasks.Repository{
+func New() tasks.Repository {
 	s := new(instance)
 	s.tasks = make([]tasks.Task, 2, 20)
 	s.tasks[0] = tasks.Task{
