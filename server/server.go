@@ -14,10 +14,8 @@ import (
 
 // Server サーバAPI
 type Server struct {
-	host    string
-	webroot string
-	server  http.Server
-	rep     tasks.Repository
+	server     http.Server
+	repository tasks.Repository
 }
 
 // New サーバAPIインスタンスを作成する
@@ -26,11 +24,10 @@ func New(addr string, webroot string) *Server {
 		server: http.Server{
 			Addr: addr,
 		},
-		webroot: webroot,
-		rep:     repository.New(),
+		repository: repository.New(),
 	}
 
-	s.setRouter()
+	s.setRouter(webroot)
 
 	return s
 }
@@ -42,21 +39,21 @@ func (s *Server) Serve() {
 	}
 }
 
-func (s *Server) setRouter() {
+func (s *Server) setRouter(webroot string) {
 	router := gin.Default()
 	api := router.Group("/api")
 	api.GET("/tasks", s.list)
 	api.POST("/tasks", s.create)
 	api.POST("/tasks/:id/done", s.done)
 
-	router.StaticFile("/", filepath.Join(s.webroot, "index.html"))
-	router.Static("/js", filepath.Join(s.webroot, "js"))
+	router.StaticFile("/", filepath.Join(webroot, "index.html"))
+	router.Static("/js", filepath.Join(webroot, "js"))
 	s.server.Handler = router
 }
 
 // list GET /tasks
 func (s *Server) list(c *gin.Context) {
-	tasks := s.rep.List()
+	tasks := s.repository.List()
 	c.JSON(http.StatusOK, tasks)
 }
 
@@ -64,7 +61,7 @@ func (s *Server) list(c *gin.Context) {
 func (s *Server) create(c *gin.Context) {
 	var task tasks.Task
 	c.ShouldBindJSON(&task)
-	task.ID = s.rep.Add(task)
+	task.ID = s.repository.Add(task)
 	c.JSON(200, &task)
 }
 
@@ -74,7 +71,7 @@ func (s *Server) done(c *gin.Context) {
 	if err != nil {
 		c.Status(400)
 	}
-	err = s.rep.Done(id)
+	err = s.repository.Done(id)
 	if err != nil {
 		c.Status(404)
 		return
