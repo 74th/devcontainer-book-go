@@ -18,7 +18,7 @@ type Server struct {
 	repository tasks.Repository
 }
 
-// New サーバAPIインスタンスを作成する
+// New サーバAPIのインスタンスを作成する
 func New(addr string, webroot string) *Server {
 	s := &Server{
 		server: http.Server{
