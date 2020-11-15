@@ -13,6 +13,12 @@ RUN go mod download
 FROM base AS devcontainer
 
 # VS Code のスクリプトを使う
+# INSTALL_ZSH=${1:-"true"}
+# USERNAME=${2:-"automatic"}
+# USER_UID=${3:-"automatic"}
+# USER_GID=${4:-"automatic"}
+# UPGRADE_PACKAGES=${5:-"true"}
+# INSTALL_OH_MYS=${6:-"true"}
 ARG USERNAME=vscode
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
@@ -25,6 +31,13 @@ RUN curl -o /tmp/common-debian.sh \
     "${USER_GID}" \
     "false" \
   && rm /tmp/common-debian.sh
+
+# TARGET_GO_VERSION=${1:-"latest"}
+# TARGET_GOROOT=${2:-"/usr/local/go"}
+# TARGET_GOPATH=${3:-"/go"}
+# USERNAME=${4:-"automatic"}
+# UPDATE_RC=${5:-"true"}
+# INSTALL_GO_TOOLS=${6:-"true"}
 RUN curl -o /tmp/go-debian.sh \
   -L https://raw.githubusercontent.com/microsoft/vscode-dev-containers/master/script-library/go-debian.sh \
   && /bin/bash /tmp/go-debian.sh \
@@ -32,8 +45,10 @@ RUN curl -o /tmp/go-debian.sh \
     "/usr/loca/go" \
     "${GOPATH}" \
     "${USERNAME}" \
+    "false" \
     "true" \
   && rm /tmp/go-debian.sh
+
 # baseではrootユーザでgo mod downloadしたため
 # vscodeユーザでアクセス可能にする
 RUN chown -R $USERNAME:$USERNAME /go
@@ -45,7 +60,7 @@ USER $USERNAME
 CMD ["sleep", "infinity"]
 
 # -----------------------------
-# Dev Container
+# Builder
 FROM base AS builder
 
 WORKDIR /workspace
@@ -53,7 +68,7 @@ ADD . .
 RUN go build -o server cmd/server/main.go
 
 # -----------------------------
-# Dev Container
+# Application
 FROM debian:buster AS app
 
 COPY --from=builder /workspace/server .
