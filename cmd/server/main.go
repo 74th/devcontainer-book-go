@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 
-	"github.com/74th/vscode-book-golang/server"
+	"github.com/74th/devcontainer-book-go/server"
 )
 
 func main() {

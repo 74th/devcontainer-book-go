@@ -2,7 +2,8 @@ package repository
 
 import (
 	"fmt"
-	"github.com/74th/vscode-book-golang/model/tasks"
+
+	"github.com/74th/devcontainer-book-go/model/tasks"
 )
 
 // repository タスク	リポジトリの実装

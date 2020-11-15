@@ -1,8 +1,9 @@
 package repository
 
 import (
-	"github.com/74th/vscode-book-golang/model/tasks"
 	"testing"
+
+	"github.com/74th/devcontainer-book-go/model/tasks"
 )
 
 func TestNew(t *testing.T) {

@@ -8,8 +8,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/74th/vscode-book-golang/model/tasks"
-	"github.com/74th/vscode-book-golang/repository"
+	"github.com/74th/devcontainer-book-go/model/tasks"
+	"github.com/74th/devcontainer-book-go/repository"
 )
 
 // Server サーバAPI
